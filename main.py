@@ -10,3 +10,8 @@ Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
+
+@app.post("/api/cursos", response_model=CursoResponse, status_code=status.HTTP_201_CREATED)
+def create(request: CursoRequest, db: Session = Depends(get_db)):
+    curso = CursoRepository.save(db, Curso(**request.dict()))
+    return CursoResponse.from_orm(curso)
