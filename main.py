@@ -32,3 +32,14 @@ def find_by_id(id: int, db: Session = Depends(get_db)):
         )
     return CursoResponse.from_orm(curso)
 
+
+@app.delete("/api/cursos/{id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_by_id(id: int, db: Session = Depends(get_db)):
+    if not CursoRepository.exists_by_id(db, id):
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Curso não encontrado"
+        )
+    CursoRepository.delete_by_id(db, id)
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
+
+
