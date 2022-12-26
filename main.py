@@ -42,4 +42,14 @@ def delete_by_id(id: int, db: Session = Depends(get_db)):
     CursoRepository.delete_by_id(db, id)
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
+@app.put("/api/cursos/{id}", response_model=CursoResponse)
+def update(id: int, request: CursoRequest, db: Session = Depends(get_db)):
+    if not CursoRepository.exists_by_id(db, id):
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Curso não encontrado"
+        )
+    curso = CursoRepository.save(db, Curso(id=id, **request.dict()))
+    return CursoResponse.from_orm(curso)
+
+
 
