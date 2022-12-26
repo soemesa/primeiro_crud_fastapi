@@ -15,3 +15,9 @@ app = FastAPI()
 def create(request: CursoRequest, db: Session = Depends(get_db)):
     curso = CursoRepository.save(db, Curso(**request.dict()))
     return CursoResponse.from_orm(curso)
+
+
+@app.get("/api/cursos", response_model=list[CursoResponse])
+def find_all(db: Session = Depends(get_db)):
+    cursos = CursoRepository.find_all(db)
+    return [CursoResponse.from_orm(curso) for curso in cursos]
